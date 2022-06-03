@@ -11,6 +11,7 @@ public class MainManager : MonoBehaviour
     public Rigidbody Ball;
 
     public Text ScoreText;
+    public Text Highscore;
     public GameObject GameOverText;
     
     private bool m_Started = false;
@@ -35,6 +36,13 @@ public class MainManager : MonoBehaviour
                 brick.PointValue = pointCountArray[i];
                 brick.onDestroyed.AddListener(AddPoint);
             }
+        }
+        if((GameManager.HsPlayername == null || GameManager.HsPlayername == "") || (GameManager.HighScore == 0))
+        {
+            Highscore.text = "No Highscore at this moment.";
+        }else
+        {
+            Highscore.text = "Highscore of " + GameManager.HighScore + " points is held by " + GameManager.HsPlayername;
         }
     }
 
