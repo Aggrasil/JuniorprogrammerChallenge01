@@ -13,6 +13,7 @@ public class MainManager : MonoBehaviour
     public Text ScoreText;
     public Text Highscore;
     public GameObject GameOverText;
+    public GameObject congratsText;
     
     private bool m_Started = false;
     private int m_Points;
@@ -80,5 +81,10 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+        if(m_Points > GameManager.HighScore)
+        {
+            GameManager.NewHighscore(m_Points);
+            congratsText.SetActive(true);
+        }
     }
 }

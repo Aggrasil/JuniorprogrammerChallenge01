@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
@@ -31,27 +32,49 @@ public class GameManager : MonoBehaviour
             GameManager.instance = value;
         }
     }
-    //Singletonpattern for GameManger
+    
     private void Awake()
     {
-        if(Instance != null)
+        //Singletonpattern for GameManger
+        if (Instance != null)
         {
             Destroy(gameObject);
             return;
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+        LoadHighscore();
+        //Singleton end
     }
-    // Start is called before the first frame update
-    void Start()
+    [System.Serializable]
+    class SaveData
     {
-        
+        public string hsPlayername;
+        public int highscore;
+    }
+    
+    public static void SaveHighscore()
+    {
+        SaveData data = new SaveData();
+        data.hsPlayername = GameManager.hsPlayername;
+        data.highscore = GameManager.highScore;
+
+        string json = JsonUtility.ToJson(data);
+
+        File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void LoadHighscore()
     {
-        
+        string path = Application.persistentDataPath + "/savefile.json";
+        if(File.Exists(path))
+        {
+            string json = File.ReadAllText(path);
+            SaveData data = JsonUtility.FromJson<SaveData>(json);
+
+            GameManager.hsPlayername = data.hsPlayername;
+            GameManager.highScore = data.highscore;
+        }
     }
 
     // Properties begin
@@ -93,4 +116,11 @@ public class GameManager : MonoBehaviour
         }
     }
     //Properties end
+
+    public static void NewHighscore(int score)
+    {
+        GameManager.HsPlayername = GameManager.ActualPlayername;
+        GameManager.HighScore = score;
+        GameManager.SaveHighscore();
+    }
 }
